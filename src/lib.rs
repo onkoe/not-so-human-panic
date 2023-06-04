@@ -112,8 +112,8 @@ macro_rules! setup_panic {
                 let meta = $meta;
 
                 panic::set_hook(Box::new(move |info: &PanicInfo| {
-                    let file_path = handle_dump(&meta, info);
-                    print_msg(file_path, &meta)
+                    let file_path = handle_dump(&meta, info.clone());
+                    print_msg(file_path, &meta, info)
                         .expect("human-panic: printing error message to console failed");
                 }));
             }
@@ -149,14 +149,18 @@ impl Default for PanicStyle {
 
 /// Utility function that prints a message to our human users
 #[cfg(feature = "color")]
-pub fn print_msg<P: AsRef<Path>>(file_path: Option<P>, meta: &Metadata) -> IoResult<()> {
+pub fn print_msg<P: AsRef<Path>>(
+    file_path: Option<P>,
+    meta: &Metadata,
+    info: &PanicInfo,
+) -> IoResult<()> {
     use std::io::Write as _;
 
     let stderr = anstream::stderr();
     let mut stderr = stderr.lock();
 
     write!(stderr, "{}", anstyle::AnsiColor::Red.render_fg())?;
-    write_msg(&mut stderr, file_path, meta)?;
+    write_msg(&mut stderr, file_path, meta, info)?;
     write!(stderr, "{}", anstyle::Reset.render())?;
 
     Ok(())
@@ -176,15 +180,38 @@ fn write_msg<P: AsRef<Path>>(
     buffer: &mut impl std::io::Write,
     file_path: Option<P>,
     meta: &Metadata,
+    info: &PanicInfo,
 ) -> IoResult<()> {
     let (_version, name, authors, homepage) =
         (&meta.version, &meta.name, &meta.authors, &meta.homepage);
 
+    // if anyone uses this, i'll actually make it pretty :)
+    // TODO: remove duplicate code (see original in handle_dump)
+    let message = match (
+        info.payload().downcast_ref::<&str>(),
+        info.payload().downcast_ref::<String>(),
+    ) {
+        (Some(s), _) => Some(s.to_string()),
+        (_, Some(s)) => Some(s.to_string()),
+        (None, None) => None,
+    };
+
+    let cause = match message {
+        Some(m) => m,
+        None => "Reason unknown. :(".into(),
+    };
+
     writeln!(buffer, "Well, this is embarrassing.\n")?;
     writeln!(
         buffer,
-        "{name} had a problem and crashed. To help us diagnose the \
-     problem you can send us a crash report.\n"
+        "{name} had a problem and crashed. \
+        It seems that the problem has to do with the following:"
+    )?;
+    writeln!(buffer, "{} \n", cause)?;
+    writeln!(
+        buffer,
+        "If you'd like, you can help us diagnose the \
+    problem! Please feel free to send us a crash report using the instructions below.\n"
     )?;
     writeln!(
         buffer,
@@ -206,9 +233,9 @@ fn write_msg<P: AsRef<Path>>(
     }
     writeln!(
         buffer,
-        "\nWe take privacy seriously, and do not perform any \
+        "\nWe take privacy very seriously - we don't perform any \
      automated error collection. In order to improve the software, we rely on \
-     people to submit reports.\n"
+     users like you to submit reports.\n"
     )?;
     writeln!(buffer, "Thank you kindly!")?;
 
