@@ -1,4 +1,4 @@
-use human_panic::setup_panic;
+use not_so_human_panic::setup_panic;
 
 fn main() {
     setup_panic!(Metadata {

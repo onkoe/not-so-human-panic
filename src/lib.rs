@@ -24,21 +24,25 @@
 //! note: Run with `RUST_BACKTRACE=1` for a backtrace.
 //! ```
 //!
-//! ### Human-Panic Output
+//! ### Not-So-Human-Panic Output
 //!
 //! ```txt
 //! Well, this is embarrassing.
 //!
-//! human-panic had a problem and crashed. To help us diagnose the problem you can send us a crash report.
+//! not-so-human-panic had a problem and crashed. It seems that the problem has to do with the following:
+//! OMG EVERYTHING IS ON FIRE!!!
 //!
-//! We have generated a report file at "/var/folders/zw/bpfvmq390lv2c6gn_6byyv0w0000gn/T/report-8351cad6-d2b5-4fe8-accd-1fcbf4538792.toml". Submit an issue or email with the subject of "human-panic Crash Report" and include the report as an attachment.
+//! If you'd like, you can help us diagnose the problem! Please feel free to send us a crash report using the instructions below.
 //!
-//! - Homepage: https://github.com/rust-ci/human-panic
+//! We have generated a report file at "/var/folders/zw/bpfvmq390lv2c6gn_6byyv0w0000gn/T/report-8351cad6-d2b5-4fe8-accd-1fcbf4538792.toml". Submit an issue or email with the subject of "single-panic-test Crash Report" and include the report as an attachment.
+//!
 //! - Authors: Yoshua Wuyts <yoshuawuyts@gmail.com>
+//! - Homepage: https://github.com/onkoe/not-so-human-panic
 //!
-//! We take privacy seriously, and do not perform any automated error collection. In order to improve the software, we rely on people to submit reports.
+//! We take privacy very seriously - we don't perform any automated error collection. In order to improve the software, we rely on users like you to submit reports.
 //!
 //! Thank you kindly!
+//! ```
 
 #![cfg_attr(docsrs, feature(doc_auto_cfg))]
 #![cfg_attr(feature = "nightly", deny(missing_docs))]
@@ -79,7 +83,7 @@ macro_rules! metadata {
     };
 }
 
-/// `human-panic` initialisation macro
+/// `not-so-human-panic` initialisation macro
 ///
 /// You can either call this macro with no arguments `setup_panic!()` or
 /// with a Metadata struct, if you don't want the error message to display
@@ -89,7 +93,7 @@ macro_rules! metadata {
 /// means you need to provide all fields for initialisation.
 ///
 /// ```
-/// use human_panic::setup_panic;
+/// use not_so_human_panic::setup_panic;
 ///
 /// setup_panic!(Metadata {
 ///     name: env!("CARGO_PKG_NAME").into(),
@@ -114,7 +118,7 @@ macro_rules! setup_panic {
                 panic::set_hook(Box::new(move |info: &PanicInfo| {
                     let file_path = handle_dump(&meta, info.clone());
                     print_msg(file_path, &meta, info)
-                        .expect("human-panic: printing error message to console failed");
+                        .expect("not-so-human-panic: printing error message to console failed");
                 }));
             }
         }

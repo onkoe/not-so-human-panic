@@ -2,7 +2,7 @@
 
 repository:
   description: "😱 Panic messages for humans."
-  homepage: "https://docs.rs/human-panic"
+  homepage: "https://docs.rs/not-so-human-panic"
   topics: "rust cli panic-hook"
   has_issues: true
   has_projects: false

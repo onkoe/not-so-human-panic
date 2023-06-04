@@ -8,7 +8,7 @@ edition = "2018"
 release = false
 
 [dependencies]
-human-panic = { path = "../.." }
+not-so-human-panic = { path = "../.." }
 
 [dev-dependencies]
 snapbox = { version = "0.4.11", features = ["cmd"] }

@@ -22,11 +22,11 @@ include = [
 
 
 [package]
-name = "human-panic"
+name = "not-so-human-panic"
 version = "1.1.4"
 description = "Panic messages for humans"
-repository = "https://github.com/rust-cli/human-panic"
-homepage = "https://github.com/rust-cli/human-panic"
+repository = "https://github.com/onkoe/not-so-human-panic"
+homepage = "https://github.com/onkoe/not-so-human-panic"
 categories = ["command-line-interface"]
 keywords = ["cli", "panic"]
 license.workspace = true
@@ -44,7 +44,7 @@ pre-release-replacements = [
   {file="CHANGELOG.md", search="\\.\\.\\.HEAD", replace="...{{tag_name}}", exactly=1},
   {file="CHANGELOG.md", search="ReleaseDate", replace="{{date}}", min=1},
   {file="CHANGELOG.md", search="<!-- next-header -->", replace="<!-- next-header -->\n## [Unreleased] - ReleaseDate\n", exactly=1},
-  {file="CHANGELOG.md", search="<!-- next-url -->", replace="<!-- next-url -->\n[Unreleased]: https://github.com/rust-cli/human-panic/compare/{{tag_name}}...HEAD", exactly=1},
+  {file="CHANGELOG.md", search="<!-- next-url -->", replace="<!-- next-url -->\n[Unreleased]: https://github.com/onkoe/not-so-human-panic/compare/{{tag_name}}...HEAD", exactly=1},
 ]
 
 [features]
