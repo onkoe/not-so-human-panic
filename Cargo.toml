@@ -23,7 +23,7 @@ include = [
 
 [package]
 name = "not-so-human-panic"
-version = "1.1.4"
+version = "1.1.5"
 description = "Panic messages for humans"
 repository = "https://github.com/onkoe/not-so-human-panic"
 homepage = "https://github.com/onkoe/not-so-human-panic"
