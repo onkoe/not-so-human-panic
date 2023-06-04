@@ -1,8 +1,49 @@
+#![allow(clippy::needless_doctest_main)] // it's not needless ;)
 //! Panic messages for humans
 //!
 //! Handles panics by calling
 //! [`std::panic::set_hook`](https://doc.rust-lang.org/std/panic/fn.set_hook.html)
 //! to make errors nice for humans.
+//!
+//! ## Differences from Human-Panic
+//!
+//! While these two libraries are extremely similar, `not-so-human-panic` also tells your users why the program panicked. It also has some slight changes to wording, mostly to prod users to report whatever bug/problem they've found.
+//!
+//! That said, `human-panic` may look less scary. If your panics are due to "truly" unexpected values, or your users are less technical, `human-panic` may be the better option!
+//!
+//! ## Quick Start
+//!
+//! To begin, please add the library to your Rust project with `cargo add not-so-human-panic`. You can also edit your Cargo.toml manually!
+//!
+//! Afterwards, you should `use` the library and stick it somewhere nice. An entrypoint like `main` is probably a good place to start!
+//!
+//!
+//! ```should_panic
+//! use not_so_human_panic::setup_panic;
+//!
+//! fn main() {
+//!    // If you want different info than your Cargo.toml provides,
+//!    // please fill out a "Metadata" struct with your information
+//!    setup_panic!();
+//!
+//!     // Fun little panic which will be happily explained
+//!     panic!("oh hey im in the quick start :D");
+//! }
+//!
+//! fn main_but_with_metadata() {
+//!     // If you want different info than what's in your Cargo.toml,
+//!     // fill out a "Metadata" struct with some different values
+//!     setup_panic!(Metadata {
+//!       name: env!("CARGO_PKG_NAME").into(),
+//!        version: env!("CARGO_PKG_VERSION").into(),
+//!        authors: "Some Guy <someone-somewhere@farts.com>".into(),
+//!        homepage: "github.com/someone/some-crate".into(),
+//!     });
+//!
+//!     panic!("ahhh you caught me!");
+//! }
+//!
+//! ```
 //!
 //! ## Why?
 //! When you're building a CLI, polish is super important. Even though Rust is
