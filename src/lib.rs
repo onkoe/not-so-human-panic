@@ -221,6 +221,9 @@ pub fn print_msg<P: AsRef<Path>>(file_path: Option<P>, meta: &Metadata) -> IoRes
     Ok(())
 }
 
+/// Prints our readable error message to the screen.
+///
+/// Utilizes `PanicInfo` to tell the user what went wrong.
 fn write_msg<P: AsRef<Path>>(
     buffer: &mut impl std::io::Write,
     file_path: Option<P>,
@@ -238,7 +241,9 @@ fn write_msg<P: AsRef<Path>>(
         "{name} had a problem and crashed. \
         It seems that the problem has to do with the following:"
     )?;
-    writeln!(buffer, "{} \n", cause)?;
+
+    writeln!(buffer, "{cause}\n")?;
+
     writeln!(
         buffer,
         "If you'd like, you can help us diagnose the \

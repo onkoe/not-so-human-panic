@@ -8,7 +8,7 @@ fn release() {
 Well, this is embarrassing.
 
 single-panic-test had a problem and crashed. It seems that the problem has to do with the following:
-OMG EVERYTHING IS ON FIRE!!! 
+OMG EVERYTHING IS ON FIRE!!!
 
 If you'd like, you can help us diagnose the problem! Please feel free to send us a crash report using the instructions below.
 
