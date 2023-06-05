@@ -225,26 +225,12 @@ fn write_msg<P: AsRef<Path>>(
     buffer: &mut impl std::io::Write,
     file_path: Option<P>,
     meta: &Metadata,
-    info: &PanicInfo,
+    panic_info: &PanicInfo,
 ) -> IoResult<()> {
     let (_version, name, authors, homepage) =
         (&meta.version, &meta.name, &meta.authors, &meta.homepage);
 
-    // if anyone uses this, i'll actually make it pretty :)
-    // TODO: remove duplicate code (see original in handle_dump)
-    let message = match (
-        info.payload().downcast_ref::<&str>(),
-        info.payload().downcast_ref::<String>(),
-    ) {
-        (Some(s), _) => Some(s.to_string()),
-        (_, Some(s)) => Some(s.to_string()),
-        (None, None) => None,
-    };
-
-    let cause = match message {
-        Some(m) => m,
-        None => "Reason unknown. :(".into(),
-    };
+    let cause = get_panic_cause(panic_info);
 
     writeln!(buffer, "Well, this is embarrassing.\n")?;
     writeln!(
@@ -287,10 +273,8 @@ fn write_msg<P: AsRef<Path>>(
     Ok(())
 }
 
-/// Utility function which will handle dumping information to disk
-pub fn handle_dump(meta: &Metadata, panic_info: &PanicInfo) -> Option<PathBuf> {
-    let mut expl = String::new();
-
+/// Returns a panic cause, if a reason is given.
+fn get_panic_cause(panic_info: &PanicInfo) -> String {
     #[cfg(feature = "nightly")]
     let message = panic_info.message().map(|m| format!("{}", m));
 
@@ -304,10 +288,23 @@ pub fn handle_dump(meta: &Metadata, panic_info: &PanicInfo) -> Option<PathBuf> {
         (None, None) => None,
     };
 
-    let cause = match message {
+    match message {
         Some(m) => m,
         None => "Unknown".into(),
-    };
+    }
+
+    // Note: The `None` case will almost NEVER happen. I couldn't find an immediately obvious way to make it occur.
+    // Using unwrap(), panic!(), array[38924], etc. still provided some message.
+    // I'd reckon we could twist a None out at some point, but I couldn't find anything common at all...
+    //
+    // Please let me know if you have some ideas which may neccessite other forms of handling.
+}
+
+/// Utility function handles dumping information to disk
+pub fn handle_dump(meta: &Metadata, panic_info: &PanicInfo) -> Option<PathBuf> {
+    let mut expl = String::new();
+
+    let cause = get_panic_cause(panic_info);
 
     match panic_info.location() {
         Some(location) => expl.push_str(&format!(
